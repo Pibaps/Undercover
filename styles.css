@@ -72,8 +72,9 @@ body {
 .menu-screen {
     padding: 20px;
     gap: 20px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu-screen h1 {
@@ -686,6 +687,7 @@ body {
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -773,8 +775,23 @@ body {
 }
 
 @media (max-width: 400px) {
+    .menu-screen {
+        padding: 10px;
+        gap: 10px;
+    }
+
     .menu-screen h1 {
         font-size: 2rem;
+    }
+
+    .info-modal {
+        padding: 10px;
+    }
+
+    .info-content {
+        padding: 16px;
+        max-width: 95vw;
+        max-height: 95vh;
     }
 
     .modal-word {
