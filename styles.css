@@ -42,6 +42,7 @@ body {
     top: 0;
     left: 0;
     overflow: hidden;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 /* Screens */
@@ -76,6 +77,9 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+    padding-top: calc(20px + env(safe-area-inset-top));
 }
 
 .menu-screen h1 {
@@ -257,9 +261,7 @@ body {
     display: flex;
     gap: 10px;
     margin-top: auto;
-    padding-bottom: 20px;
-    padding-bottom: calc(20px + constant(safe-area-inset-bottom)); /* iOS 11.x */
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));       /* Moderne */
+    padding-bottom: calc(40px + max(20px, env(safe-area-inset-bottom)));
 }
 
 .btn-primary {
