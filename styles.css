@@ -72,14 +72,40 @@ body {
 
 /* Menu Screen */
 .menu-screen {
-    padding: 20px;
-    gap: 20px;
+    padding: 0;
+    gap: 0;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 100%;
+}
+
+/* Header fixe */
+.menu-screen h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    padding: calc(20px + env(safe-area-inset-top)) 20px 10px 20px;
     padding-left: calc(20px + env(safe-area-inset-left));
     padding-right: calc(20px + env(safe-area-inset-right));
-    padding-top: calc(20px + env(safe-area-inset-top));
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+}
+
+/* Contenu scrollable */
+.menu-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 0 20px;
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+    padding-bottom: 20px;
 }
 
 .menu-screen h1 {
@@ -260,8 +286,13 @@ body {
 .menu-buttons {
     display: flex;
     gap: 10px;
-    margin-top: auto;
-    padding-bottom: calc(40px + max(20px, env(safe-area-inset-bottom)));
+    padding: 20px;
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+    padding-bottom: calc(20px + max(20px, env(safe-area-inset-bottom)));
+    flex-shrink: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
 }
 
 .btn-primary {

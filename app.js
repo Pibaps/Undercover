@@ -182,26 +182,28 @@ class App {
             <div class="menu-screen">
                 <h1>Undercover</h1>
                 
-                <div class="menu-section">
-                    <h2>Participants</h2>
-                    <div class="players-container" id="playersContainer"></div>
-                    <button class="btn-add-player" id="btnAddPlayer">Ajouter un participant</button>
-                </div>
+                <div class="menu-content">
+                    <div class="menu-section">
+                        <h2>Participants</h2>
+                        <div class="players-container" id="playersContainer"></div>
+                        <button class="btn-add-player" id="btnAddPlayer">Ajouter un participant</button>
+                    </div>
 
-                <div class="menu-section">
-                    <h2>Thèmes</h2>
-                    <div class="packs-container" id="packsContainer"></div>
-                </div>
+                    <div class="menu-section">
+                        <h2>Thèmes</h2>
+                        <div class="packs-container" id="packsContainer"></div>
+                    </div>
 
-                <div class="menu-section">
-                    <h2>Mots personnalisés</h2>
-                    <div class="upload-section">
-                        <div class="file-input-wrapper">
-                            <input type="file" id="csvInput" accept=".csv" />
-                            <button class="btn-upload" id="btnUpload">Charger CSV</button>
-                        </div>
-                        <div class="upload-info">
-                            Format CSV: mot,undercover (une paire par ligne)
+                    <div class="menu-section">
+                        <h2>Mots personnalisés</h2>
+                        <div class="upload-section">
+                            <div class="file-input-wrapper">
+                                <input type="file" id="csvInput" accept=".csv" />
+                                <button class="btn-upload" id="btnUpload">Charger CSV</button>
+                            </div>
+                            <div class="upload-info">
+                                Format CSV: mot,undercover (une paire par ligne)
+                            </div>
                         </div>
                     </div>
                 </div>
