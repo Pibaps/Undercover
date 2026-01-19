@@ -30,6 +30,7 @@ body {
     color: var(--text);
     position: fixed;
     overflow: hidden;
+    touch-action: manipulation;
 }
 
 #app {
@@ -70,7 +71,7 @@ body {
 
 /* Menu Screen */
 .menu-screen {
-    padding: 20px 20px 40px 20px;
+    padding: 20px;
     gap: 20px;
     overflow: hidden;
     display: flex;
@@ -256,7 +257,7 @@ body {
     display: flex;
     gap: 10px;
     margin-top: auto;
-    padding-bottom: 40px;
+    padding-bottom: 30px;
 }
 
 .btn-primary {
@@ -674,6 +675,7 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    overflow: hidden;
 }
 
 .info-modal.active {
@@ -685,11 +687,15 @@ body {
     border-radius: 16px;
     padding: 24px;
     max-width: 500px;
+    width: 100%;
     max-height: 90vh;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
     touch-action: pan-y;
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .info-content h1 {
@@ -777,7 +783,7 @@ body {
 
 @media (max-width: 400px) {
     .menu-screen {
-        padding: 10px 10px 30px 10px;
+        padding: 10px;
         gap: 10px;
     }
 
