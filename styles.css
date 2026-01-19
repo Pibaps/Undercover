@@ -70,7 +70,7 @@ body {
 
 /* Menu Screen */
 .menu-screen {
-    padding: 20px;
+    padding: 20px 20px 40px 20px;
     gap: 20px;
     overflow: hidden;
     display: flex;
@@ -256,7 +256,7 @@ body {
     display: flex;
     gap: 10px;
     margin-top: auto;
-    padding-bottom: 20px;
+    padding-bottom: 40px;
 }
 
 .btn-primary {
@@ -688,6 +688,7 @@ body {
     max-height: 90vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.5);
 }
 
@@ -776,7 +777,7 @@ body {
 
 @media (max-width: 400px) {
     .menu-screen {
-        padding: 10px;
+        padding: 10px 10px 30px 10px;
         gap: 10px;
     }
 
