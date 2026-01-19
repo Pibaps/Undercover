@@ -702,7 +702,13 @@ Cinéma,Film
     setupEventListeners() {
         // Prevent scrolling
         document.addEventListener('touchmove', (e) => {
-            if (e.target.closest('.players-grid') || e.target.closest('.voting-grid') || e.target.closest('.menu-screen')) {
+            if (
+                e.target.closest('.players-grid') ||
+                e.target.closest('.voting-grid') ||
+                e.target.closest('.menu-screen') ||
+                e.target.closest('.info-content') ||
+                e.target.closest('.modal-content')
+            ) {
                 return; // Allow scroll in specific containers
             }
             e.preventDefault();
