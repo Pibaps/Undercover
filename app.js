@@ -3,6 +3,7 @@ class GameState {
         this.players = [];
         this.selectedPacks = [];
         this.customPairs = [];
+        this.showUndercoverIdentity = true;
         this.currentRound = 0;
         this.currentPair = null;
         this.revealedPlayers = {};
@@ -16,6 +17,7 @@ class GameState {
             players: this.players,
             selectedPacks: this.selectedPacks,
             customPairs: this.customPairs,
+            showUndercoverIdentity: this.showUndercoverIdentity,
             currentRound: this.currentRound,
             currentPair: this.currentPair,
             revealedPlayers: this.revealedPlayers,
@@ -33,6 +35,7 @@ class GameState {
                 this.players = state.players || [];
                 this.selectedPacks = state.selectedPacks || [];
                 this.customPairs = state.customPairs || [];
+                this.showUndercoverIdentity = state.showUndercoverIdentity !== undefined ? state.showUndercoverIdentity : true;
                 this.currentRound = state.currentRound || 0;
                 this.currentPair = state.currentPair || null;
                 this.revealedPlayers = state.revealedPlayers || {};
@@ -49,6 +52,7 @@ class GameState {
         this.players = [];
         this.selectedPacks = [];
         this.customPairs = [];
+        this.showUndercoverIdentity = true;
         this.currentRound = 0;
         this.currentPair = null;
         this.revealedPlayers = {};
@@ -57,11 +61,12 @@ class GameState {
         localStorage.removeItem('undercoverState');
     }
 
-    startGame(players, selectedPacks, customPairs) {
+    startGame(players, selectedPacks, customPairs, showUndercoverIdentity = true) {
         this.reset();
         this.players = players.map(name => ({ name, id: Math.random().toString() }));
         this.selectedPacks = selectedPacks;
         this.customPairs = customPairs;
+        this.showUndercoverIdentity = showUndercoverIdentity;
         
         // Build all pairs
         this.allPairs = [];
@@ -195,6 +200,17 @@ class App {
                     </div>
 
                     <div class="menu-section">
+                        <h2>Révélation</h2>
+                        <label class="menu-toggle" for="revealUndercoverIdentity">
+                            <input type="checkbox" id="revealUndercoverIdentity" ${this.state.showUndercoverIdentity ? 'checked' : ''} />
+                            <span>
+                                <strong>Montrer si le joueur est undercover</strong>
+                                <small>Si désactivé, chacun voit seulement son mot.</small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="menu-section">
                         <h2>Mots personnalisés</h2>
                         <div class="upload-section">
                             <div class="file-input-wrapper">
@@ -250,6 +266,10 @@ class App {
 
         div.querySelector('#csvInput').addEventListener('change', (e) => {
             this.handleCSVUpload(e, div);
+        });
+
+        div.querySelector('#revealUndercoverIdentity').addEventListener('change', () => {
+            this.updateMenuValidation(div);
         });
 
         div.querySelector('#btnStartGame').addEventListener('click', () => {
@@ -347,6 +367,7 @@ class App {
         const inputs = menuDiv.querySelectorAll('.player-input-group input');
         const players = Array.from(inputs).map(i => i.value.trim()).filter(v => v);
         const packs = Array.from(menuDiv.querySelectorAll('.pack-checkbox input:checked')).map(i => i.value);
+        const revealUndercoverIdentity = menuDiv.querySelector('#revealUndercoverIdentity')?.checked ?? true;
 
         const btn = menuDiv.querySelector('#btnStartGame');
         const hasPlayers = players.length >= 2;
@@ -357,6 +378,7 @@ class App {
         // Save state temporarily
         this.state.players = players.map(name => ({ name, id: Math.random().toString() }));
         this.state.selectedPacks = packs;
+        this.state.showUndercoverIdentity = revealUndercoverIdentity;
         this.state.save();
     }
 
@@ -365,6 +387,7 @@ class App {
         const inputs = menuDiv.querySelectorAll('.player-input-group input');
         const players = Array.from(inputs).map(i => i.value.trim()).filter(v => v);
         const packs = Array.from(menuDiv.querySelectorAll('.pack-checkbox input:checked')).map(i => i.value);
+        const revealUndercoverIdentity = menuDiv.querySelector('#revealUndercoverIdentity')?.checked ?? true;
 
         if (players.length < 2) {
             this.showError(menuDiv, 'Au moins 2 joueurs requis');
@@ -376,7 +399,7 @@ class App {
             return;
         }
 
-        this.state.startGame(players, packs, this.state.customPairs);
+        this.state.startGame(players, packs, this.state.customPairs, revealUndercoverIdentity);
         this.currentScreen = 'game';
         this.render();
     }
@@ -434,6 +457,7 @@ class App {
 
         const word = this.state.getPlayerWord(player.id);
         const isUndercover = this.state.getUndercoverPlayer() === player.id;
+        const identityMessage = this.state.showUndercoverIdentity && isUndercover ? 'Tu es undercover' : 'Mot distribué';
 
         modal.innerHTML = `
             <div class="modal-content">
@@ -442,7 +466,7 @@ class App {
                 </div>
                 <div class="modal-word">${word}</div>
                 <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
-                    ${isUndercover ? 'Tu es undercover' : ''}
+                    ${identityMessage}
                 </div>
                 <div class="modal-buttons">
                     <button class="btn-confirm" id="btnConfirm">Confirmer</button>
@@ -721,15 +745,4 @@ Cinéma,Film
 // Initialize app
 window.addEventListener('DOMContentLoaded', () => {
     new App();
-});
-
-// Prevent zoom
-document.addEventListener('touchstart', (e) => {
-    if (e.touches.length > 1) {
-        e.preventDefault();
-    }
-}, { passive: false });
-
-document.addEventListener('gesturestart', (e) => {
-    e.preventDefault();
 });

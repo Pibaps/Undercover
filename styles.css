@@ -10,6 +10,8 @@
     --text-muted: #94a3b8;
     --border: #1e3a5f;
     --accent: #3b82f6;
+    --screen-padding: clamp(12px, 2vw, 24px);
+    --content-max: 920px;
 }
 
 * {
@@ -21,6 +23,7 @@
 html, body {
     width: 100%;
     height: 100%;
+    min-height: 100%;
     overflow: hidden;
 }
 
@@ -29,6 +32,7 @@ body {
     background: var(--bg);
     color: var(--text);
     position: fixed;
+    min-height: 100dvh;
     overflow: hidden;
     touch-action: manipulation;
 }
@@ -36,13 +40,26 @@ body {
 #app {
     width: 100vw;
     height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
     overflow: hidden;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: calc(env(safe-area-inset-top) + var(--screen-padding)) calc(env(safe-area-inset-right) + var(--screen-padding)) calc(env(safe-area-inset-bottom) + var(--screen-padding)) calc(env(safe-area-inset-left) + var(--screen-padding));
+}
+
+button,
+input,
+label {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.85);
+    outline-offset: 2px;
 }
 
 /* Screens */
@@ -78,19 +95,20 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
 }
 
 /* Header fixe */
 .menu-screen h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 2.8rem);
     font-weight: 700;
     text-align: center;
     margin: 0;
-    padding: calc(20px + env(safe-area-inset-top)) 20px 10px 20px;
-    padding-left: calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
+    padding: calc(18px + env(safe-area-inset-top)) var(--screen-padding) 10px var(--screen-padding);
     letter-spacing: -0.5px;
     flex-shrink: 0;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
 }
 
 /* Contenu scrollable */
@@ -102,14 +120,15 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 0 20px;
-    padding-left: calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
+    padding: 0 var(--screen-padding);
     padding-bottom: 20px;
+    min-height: 0;
 }
 
 .menu-screen h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 5vw, 2.8rem);
     font-weight: 700;
     text-align: center;
     margin-bottom: 10px;
@@ -133,6 +152,42 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-size: 0.8rem;
+}
+
+.menu-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    cursor: pointer;
+}
+
+.menu-toggle input {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+}
+
+.menu-toggle span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-toggle strong {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.menu-toggle small {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--text-muted);
 }
 
 .players-container {
@@ -286,10 +341,9 @@ body {
 .menu-buttons {
     display: flex;
     gap: 10px;
-    padding: 20px;
-    padding-left: calc(20px + env(safe-area-inset-left));
-    padding-right: calc(20px + env(safe-area-inset-right));
-    padding-bottom: calc(20px + max(20px, env(safe-area-inset-bottom)));
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
+    padding: 16px var(--screen-padding) calc(16px + max(16px, env(safe-area-inset-bottom)));
     flex-shrink: 0;
     background: var(--bg);
     border-top: 1px solid var(--border);
@@ -334,10 +388,11 @@ body {
 
 /* Game Screen */
 .game-screen {
-    padding: 20px;
+    padding: var(--screen-padding);
     gap: 16px;
     overflow: hidden;
     position: relative;
+    min-height: 0;
 }
 
 .game-header {
@@ -345,6 +400,8 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
 }
 
 .round-info {
@@ -378,6 +435,9 @@ body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 10px;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
+    min-height: 0;
 }
 
 .player-card {
@@ -432,7 +492,7 @@ body {
     background: var(--card);
     border-radius: 16px;
     padding: 24px;
-    max-width: 90vw;
+    width: min(90vw, 480px);
     max-height: 80vh;
     overflow-y: auto;
     text-align: center;
@@ -475,10 +535,11 @@ body {
 
 /* Waiting Screen */
 .waiting-screen {
-    padding: 20px;
+    padding: var(--screen-padding);
     gap: 20px;
     align-items: center;
     justify-content: center;
+    min-height: 0;
 }
 
 .waiting-content {
@@ -486,6 +547,8 @@ body {
     gap: 20px;
     display: flex;
     flex-direction: column;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
 }
 
 .waiting-content h2 {
@@ -539,8 +602,9 @@ body {
 
 /* Voting Screen */
 .voting-screen {
-    padding: 20px;
+    padding: var(--screen-padding);
     gap: 16px;
+    min-height: 0;
 }
 
 .voting-title {
@@ -557,6 +621,9 @@ body {
     flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    width: min(100%, var(--content-max));
+    margin: 0 auto;
+    min-height: 0;
 }
 
 .voting-card {
@@ -624,10 +691,11 @@ body {
 
 /* Result Screen */
 .result-screen {
-    padding: 20px;
+    padding: var(--screen-padding);
     gap: 20px;
     align-items: center;
     justify-content: center;
+    min-height: 0;
 }
 
 .result-content {
@@ -637,6 +705,7 @@ body {
     flex-direction: column;
     width: 100%;
     max-width: 500px;
+    margin: 0 auto;
 }
 
 .result-title {
@@ -709,7 +778,7 @@ body {
     z-index: 2000;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: var(--screen-padding);
     overflow: hidden;
 }
 
@@ -721,8 +790,7 @@ body {
     background: var(--card);
     border-radius: 16px;
     padding: 24px;
-    max-width: 500px;
-    width: 100%;
+    width: min(100%, 500px);
     max-height: 90vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -810,10 +878,20 @@ body {
     font-size: 0.9rem;
 }
 
+:focus-visible {
+    scroll-margin: 16px;
+}
+
 /* Scrollbar hide */
 .players-grid::-webkit-scrollbar,
 .voting-grid::-webkit-scrollbar {
     width: 0;
+}
+
+@media (max-width: 520px) {
+    .packs-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 400px) {
@@ -850,5 +928,56 @@ body {
 
     .voting-grid {
         grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+
+    .menu-toggle {
+        padding: 10px;
+    }
+}
+
+@media (max-height: 700px) {
+    :root {
+        --screen-padding: 10px;
+    }
+
+    .menu-content,
+    .game-screen,
+    .waiting-screen,
+    .voting-screen,
+    .result-screen {
+        gap: 12px;
+    }
+
+    .menu-section {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .menu-screen h1 {
+        font-size: 1.9rem;
+        padding-top: calc(12px + env(safe-area-inset-top));
+    }
+
+    .menu-buttons {
+        padding-top: 12px;
+        padding-bottom: calc(12px + max(12px, env(safe-area-inset-bottom)));
+    }
+
+    .modal-content,
+    .info-content {
+        max-height: 88vh;
+    }
+}
+
+@media (min-width: 1000px) {
+    .menu-content,
+    .menu-screen h1,
+    .menu-buttons,
+    .game-header,
+    .players-grid,
+    .voting-grid,
+    .waiting-content,
+    .result-content {
+        width: min(100%, 980px);
     }
 }
