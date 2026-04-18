@@ -9,6 +9,9 @@ class GameState {
         this.revealedPlayers = {};
         this.votes = {};
         this.allPairs = [];
+        this.drawPile = [];
+        this.drawIndex = 0;
+        this.lastDrawOrderSignature = this.loadLastDrawOrderSignature();
         this.load();
     }
 
@@ -22,7 +25,9 @@ class GameState {
             currentPair: this.currentPair,
             revealedPlayers: this.revealedPlayers,
             votes: this.votes,
-            allPairs: this.allPairs
+            allPairs: this.allPairs,
+            drawPile: this.drawPile,
+            drawIndex: this.drawIndex
         };
         localStorage.setItem('undercoverState', JSON.stringify(state));
     }
@@ -41,6 +46,8 @@ class GameState {
                 this.revealedPlayers = state.revealedPlayers || {};
                 this.votes = state.votes || {};
                 this.allPairs = state.allPairs || [];
+                this.drawPile = state.drawPile || [];
+                this.drawIndex = state.drawIndex || 0;
             } catch (e) {
                 console.error('Error loading state:', e);
                 this.reset();
@@ -58,6 +65,8 @@ class GameState {
         this.revealedPlayers = {};
         this.votes = {};
         this.allPairs = [];
+        this.drawPile = [];
+        this.drawIndex = 0;
         localStorage.removeItem('undercoverState');
     }
 
@@ -79,18 +88,43 @@ class GameState {
             this.allPairs.push(...customPairs);
         }
 
+        this.drawPile = this.shufflePairs(this.allPairs);
+        const currentSignature = this.getDrawOrderSignature(this.drawPile);
+        if (this.drawPile.length > 1 && currentSignature === this.lastDrawOrderSignature) {
+            let attempts = 0;
+            while (attempts < 8 && this.getDrawOrderSignature(this.drawPile) === this.lastDrawOrderSignature) {
+                this.drawPile = this.shufflePairs(this.allPairs);
+                attempts++;
+            }
+
+            if (this.getDrawOrderSignature(this.drawPile) === this.lastDrawOrderSignature) {
+                this.drawPile = [...this.drawPile.slice(1), this.drawPile[0]];
+            }
+        }
+
+        this.drawIndex = 0;
+        this.lastDrawOrderSignature = this.getDrawOrderSignature(this.drawPile);
+        this.saveLastDrawOrderSignature(this.lastDrawOrderSignature);
+
         this.startRound();
         this.save();
     }
 
     startRound() {
-        if (this.allPairs.length === 0) {
-            this.allPairs.push({ word: 'Par défaut', undercover: 'Pair' });
+        if (this.drawPile.length === 0) {
+            this.drawPile = [{ word: 'Par défaut', undercover: 'Pair' }];
         }
-        this.currentPair = this.allPairs[Math.floor(Math.random() * this.allPairs.length)];
+        if (this.drawIndex >= this.drawPile.length) {
+            this.currentPair = null;
+            this.save();
+            return false;
+        }
+
+        this.currentPair = this.drawPile[this.drawIndex];
         this.revealedPlayers = {};
         this.votes = {};
         this.save();
+        return true;
     }
 
     getPlayerWord(playerId) {
@@ -146,8 +180,36 @@ class GameState {
     }
 
     nextRound() {
+        if (this.drawIndex + 1 >= this.drawPile.length) {
+            return false;
+        }
+
         this.currentRound++;
+        this.drawIndex++;
         this.startRound();
+        this.save();
+        return true;
+    }
+
+    shufflePairs(pairs) {
+        const shuffled = [...pairs];
+        for (let index = shuffled.length - 1; index > 0; index--) {
+            const swapIndex = Math.floor(Math.random() * (index + 1));
+            [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+        }
+        return shuffled;
+    }
+
+    getDrawOrderSignature(pairs) {
+        return pairs.map(pair => `${pair.word}::${pair.undercover}`).join('|');
+    }
+
+    loadLastDrawOrderSignature() {
+        return localStorage.getItem('undercoverLastDrawOrderSignature') || '';
+    }
+
+    saveLastDrawOrderSignature(signature) {
+        localStorage.setItem('undercoverLastDrawOrderSignature', signature);
     }
 }
 
@@ -634,9 +696,12 @@ class App {
         `;
 
         div.querySelector('#btnNextRound').addEventListener('click', () => {
-            this.state.nextRound();
-            this.currentScreen = 'game';
-            this.render();
+            if (this.state.nextRound()) {
+                this.currentScreen = 'game';
+                this.render();
+            } else {
+                alert('Toutes les paires ont déjà été utilisées pour cette partie. Lance une nouvelle partie pour repartir avec une nouvelle pioche.');
+            }
         });
 
         div.querySelector('#btnQuit').addEventListener('click', () => {
